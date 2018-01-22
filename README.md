@@ -54,14 +54,18 @@ V5: YinYang K-Means.
        represented by point._2 .
        
      * Provided clusterAssignment has changed, the point is added to partial sum for new center and subtracted from old center.
-     * The code snippet on right shows center update function that involves adding the previous sum of points for a cluster like 
-       shown in the equation above.    
+     * The code snippet on right shows center update function that adds the previous sum of points for a cluster and then 
+       divides the sum total by number of points assigned to the cluster in current iteration as shown in the Update   
+       equation.  
    
   <p align="center"> 
   <img width="5151" alt="screen shot 2018-01-14 at 10 00 45 am" src="https://user-images.githubusercontent.com/15849566/34919010-d8496dc2-f911-11e7-8b8a-4e88e3f9e2ad.png">
   </p>
 
    * *Yinyang* :
+      * In traditional k-means the assignment step computes distance between every point and every cluster center in order   to find closest center to each point.   
+      In Yinyang because of the two filters, we detect which distance calculations are not needed and avoid doing them for speed up.  
+
       * This approach optimizes the cluster assignment step with reference to a paper in ICML named 
       [Yinyang K-Means](https://people.engr.ncsu.edu/xshen5/Publications/icml15.pdf).      
       * The idea is to use upper and lower bounds to reduce number of distance computations. It makes use of triangle inequality 
@@ -70,19 +74,26 @@ V5: YinYang K-Means.
       <img width="250" alt="screen shot 2018-01-14 at 10 33 09 am" src="https://user-images.githubusercontent.com/15849566/34919305-659193a4-f916-11e7-9b1f-56c1af2f11e0.png"> 
       </p>
       
-      * The paper uses a concept of *global filtering* to determine whether a point changed its cluster assignment. A point x did 
-      not change its cluster if 
+      * The paper uses a concept of *global filtering* to determine whether a point changed its cluster assignment.   
+        Although, *global filtering* reduces many distance calculations, its 	effectiveness gets throttled in presence of big movers. Based on that a point x did not change its cluster if   
       
       <p align = "center">
       <img width="350" alt="screen shot 2018-01-14 at 10 44 44 am" src="https://user-images.githubusercontent.com/15849566/34919389-f9c0c6fc-f917-11e7-874e-038fe9a2ecb1.png">
       </p>
        
        * b(x) is closest center assigned to point x, ub(x) is upper bound of point x, lb(x) is lower bound of point x and 
-         delta(b) is change in distance of center b.  
-       * The paper modifies the global filtering and introduces two types of filtering group and local. Only group filtering is 
-         implemented here that updates the various bounds.
+         delta(b) is change in distance of center b. In order to initialize these bounds we use distance to the best cluster 
+         center as the *upper bound* and distance to second-closest cluster center as the *lower bound* .  
+  
+       * The paper modifies the global filtering and introduces two types of filtering *group* and *local*. Only group   
+         filtering is implemented here that updates the various bounds. *Group filtering* is a generalization of the global 
+         filtering that addresses shortcoming of *global filtering* through an elastic design. It first groups k-clusters 
+         into t groups prior to first iteration of K-Means subsequently using global filtering.
+	        It carefully maintains *upper bound* of distance from a given point to its assigned cluster center, and its *lower bound* of the distance to other cluster centers. The interplay between these two bounds forms a two-level filter, through which, Yinyang K-means avoids unnecessary distance calculations effectively.
+	
+
        * The implementation of YinYang algorithm starts with transfroming each point to a RDD of tuples represented as (point, 
-         clusterAssignment, upperBound, lowerBound). Center update is used as described above to optimize the update step.
+         clusterAssignment, upperBound, lowerBound). Center update is used as described above to optimize the update   step(Step 3.1 below Equation 1 is Center Update equation).  
        * Instead of using local filtering, standard distance computation to each center was used for such points.    
        
        <p align = "center">
