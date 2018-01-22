@@ -20,7 +20,8 @@ V5: YinYang K-Means.
   <img width="786" alt="screen shot 2018-01-14 at 5 01 50 am" src="https://user-images.githubusercontent.com/15849566/34916153-141b2e82-f8e8-11e7-846a-1662f172d431.png">  
           
                           
-   * Initially data is stored as RDD and centers are initialized using user specified method.  
+   * Initially data is stored as RDD and centers are initialized either using user specified "random" to choose random   
+     points as initial cluster centers or ["k-means||"(default)](http://theory.stanford.edu/~sergei/papers/vldb12-kmpar.pdf).    
    * Centers are broadcasted to workers and mapPartitions method called on the RDD.  
       * In mapPartitions, closest center computed for each point and partial (sum, count) computed by each worker.  
       * Each worker returns iterator containing partial sum and count for each center (k values) based on points in their 
