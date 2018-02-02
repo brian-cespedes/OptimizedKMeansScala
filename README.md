@@ -41,7 +41,7 @@ V5: YinYang K-Means.
    * The updated centers are used for the next iteration and repeated until a user specified number of iterations.    
    
   ### Optimizations :          
-   * *Update* :  
+   * *Center Update* :  
      * Update step of K-Means is optimized using   
      
      <p align="center"> 
