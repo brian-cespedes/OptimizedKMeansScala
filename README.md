@@ -5,6 +5,16 @@ V2: Vanilla Spark MLlib K-Means.
 V4: Center Update K-Means.  
 V5: YinYang K-Means.  
 
+## K-Means algorithm:  
+1. Select K points as initial centroids.    
+2. ***repeat***  
+3.    Form K clusters such that each point is assigned to its closest centroid.  
+4.    Recompute centroid of each cluster.  
+5. ***until*** Centroids do not change or you reached the max number of iterations set by user.    
+
+<p align="center"> 
+<img width="600" alt="screen shot 2018-02-02 at 9 02 03 am" src="https://user-images.githubusercontent.com/15849566/35745421-13581f72-07f8-11e8-8027-e45adbb8ec30.png">
+</p>
 
 ## Implementation   
  
